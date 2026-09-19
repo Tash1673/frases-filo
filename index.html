@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frases de Filosofia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#0d0c0f;
+    --bg-2:#17151a;
+    --stone:#211f26;
+    --line:#3a3641;
+    --ink:#ece7dd;
+    --ink-dim:#8f8a94;
+    --gold:#b99a5b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at 50% -10%, #221f28 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 110%, #1a1720 0%, transparent 55%),
+      var(--bg-1);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .card{
+    width:100%;
+    max-width:560px;
+    background:var(--stone);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:52px 44px 36px;
+    position:relative;
+    text-align:center;
+  }
+  .card::before, .card::after{
+    content:"";
+    position:absolute;
+    top:16px; bottom:16px;
+    width:1px;
+    background:linear-gradient(var(--line), transparent, var(--line));
+    opacity:0.6;
+  }
+  .card::before{ left:16px; }
+  .card::after{ right:16px; }
+
+  .mark{
+    font-family:'Cormorant Garamond', serif;
+    font-size:64px;
+    line-height:1;
+    color:var(--gold);
+    opacity:0.55;
+    margin-bottom:4px;
+    user-select:none;
+  }
+
+  .quote{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:28px;
+    line-height:1.45;
+    color:var(--ink);
+    min-height:140px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 6px;
+    transition:opacity 0.35s ease, transform 0.35s ease;
+  }
+  .quote.fade{ opacity:0; transform:translateY(6px); }
+
+  .author-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    margin:22px 0 34px;
+    transition:opacity 0.35s ease;
+  }
+  .author-row.fade{ opacity:0; }
+  .rule{
+    width:34px;
+    height:1px;
+    background:var(--gold);
+    opacity:0.6;
+  }
+  .author{
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .author b{
+    color:var(--gold);
+    font-weight:500;
+  }
+
+  .actions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+  }
+  button{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+    padding:12px 20px;
+    border-radius:2px;
+    cursor:pointer;
+    transition:border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  button:hover{ border-color:var(--gold); color:var(--gold); }
+  button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  #newQuoteBtn{
+    background:var(--gold);
+    color:#1a1710;
+    border-color:var(--gold);
+    font-weight:600;
+  }
+  #newQuoteBtn:hover{ background:#c7a968; color:#1a1710; }
+
+  .footer-note{
+    margin-top:24px;
+    font-size:10.5px;
+    color:var(--ink-dim);
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width: 480px){
+    .card{ padding:40px 24px 28px; }
+    .quote{ font-size:23px; min-height:170px; }
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="mark">"</div>
+    <div class="quote" id="quoteText">Carregando...</div>
+    <div class="author-row" id="authorRow">
+      <span class="rule"></span>
+      <span class="author" id="authorText"></span>
+      <span class="rule"></span>
+    </div>
+    <div class="actions">
+      <button id="newQuoteBtn">Nova frase</button>
+      <button id="copyBtn">Copiar</button>
+    </div>
+    <div class="footer-note" id="counterNote"></div>
+  </div>
+
+<script>
+(function(){
+  const quotes = [
+    { text: "Quem tem um porquê para viver suporta quase qualquer como.", author: "Friedrich Nietzsche" },
+    { text: "O que não me mata me fortalece.", author: "Friedrich Nietzsche" },
+    { text: "Torna-te quem tu és.", author: "Friedrich Nietzsche" },
+    { text: "É preciso ainda ter caos dentro de si para poder dar à luz uma estrela dançante.", author: "Friedrich Nietzsche" },
+    { text: "Não há fatos, apenas interpretações.", author: "Friedrich Nietzsche" },
+    { text: "Quem luta com monstros deve cuidar para não se tornar um monstro também.", author: "Friedrich Nietzsche" },
+    { text: "A vida sem música seria um erro.", author: "Friedrich Nietzsche" },
+    { text: "O homem é uma corda estendida entre o animal e o super-homem — uma corda sobre um abismo.", author: "Friedrich Nietzsche" },
+    { text: "É difícil escavar no fundo de si mesmo e descobrir a própria verdade.", author: "Friedrich Nietzsche" },
+    { text: "Só se pode alcançar um grande êxito quando nos mantemos fiéis a nós próprios.", author: "Friedrich Nietzsche" },
+    { text: "Conhece-te a ti mesmo.", author: "Sócrates" },
+    { text: "Só sei que nada sei.", author: "Sócrates" },
+    { text: "Uma vida não examinada não merece ser vivida.", author: "Sócrates" },
+    { text: "Não é o homem mais forte, nem o mais inteligente, mas o mais adaptável às mudanças que sobrevive.", author: "Charles Darwin" },
+    { text: "Somos aquilo que fazemos repetidamente. A excelência, portanto, não é um feito, mas um hábito.", author: "Aristóteles" },
+    { text: "Conhecer a si mesmo é o princípio de toda sabedoria.", author: "Aristóteles" },
+    { text: "Não existe nada de bom ou de mau, mas o pensamento é que faz com que seja assim.", author: "William Shakespeare" },
+    { text: "A verdadeira coragem é a que se mostra nos pequenos atos diários.", author: "Sêneca" },
+    { text: "Não é porque as coisas são difíceis que não ousamos; é porque não ousamos que as coisas são difíceis.", author: "Sêneca" },
+    { text: "Toda a nossa vida não passa de um instante, na verdade.", author: "Marco Aurélio" },
+    { text: "Nossa vida é aquilo que nossos pensamentos fazem dela.", author: "Marco Aurélio" },
+    { text: "O obstáculo é o caminho.", author: "Marco Aurélio" },
+    { text: "Age apenas segundo uma máxima tal que possas ao mesmo tempo querer que ela se torne lei universal.", author: "Immanuel Kant" },
+    { text: "Tenha coragem de servir-te do teu próprio entendimento.", author: "Immanuel Kant" },
+    { text: "Penso, logo existo.", author: "René Descartes" },
+    { text: "Não é o que acontece com você, mas como você reage a isso que importa.", author: "Epicteto" },
+    { text: "Existem coisas que estão em nosso poder, e coisas que não estão.", author: "Epicteto" },
+    { text: "O homem é a medida de todas as coisas.", author: "Protágoras" },
+    { text: "A dúvida é o princípio da sabedoria.", author: "Aristóteles" },
+    { text: "Ninguém é livre se não for senhor de si mesmo.", author: "Epicteto" }
+  ];
+
+  const quoteEl = document.getElementById('quoteText');
+  const authorEl = document.getElementById('authorText');
+  const authorRow = document.getElementById('authorRow');
+  const newQuoteBtn = document.getElementById('newQuoteBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const counterNote = document.getElementById('counterNote');
+
+  let currentIndex = -1;
+  let shownCount = 0;
+
+  function pickIndex(){
+    if(quotes.length === 1) return 0;
+    let idx;
+    do { idx = Math.floor(Math.random() * quotes.length); }
+    while(idx === currentIndex);
+    return idx;
+  }
+
+  function renderQuote(idx){
+    const q = quotes[idx];
+    quoteEl.textContent = '\u201C' + q.text + '\u201D';
+    authorEl.innerHTML = '<b>' + q.author + '</b>';
+  }
+
+  function showNext(){
+    quoteEl.classList.add('fade');
+    authorRow.classList.add('fade');
+    setTimeout(() => {
+      currentIndex = pickIndex();
+      renderQuote(currentIndex);
+      shownCount++;
+      counterNote.textContent = shownCount + ' frase' + (shownCount === 1 ? '' : 's') + ' exibida' + (shownCount === 1 ? '' : 's') + ' nesta sessão';
+      quoteEl.classList.remove('fade');
+      authorRow.classList.remove('fade');
+    }, 220);
+  }
+
+  newQuoteBtn.addEventListener('click', showNext);
+
+  copyBtn.addEventListener('click', async () => {
+    const q = quotes[currentIndex];
+    const text = '"' + q.text + '" — ' + q.author;
+    try {
+      await navigator.clipboard.writeText(text);
+      const original = copyBtn.textContent;
+      copyBtn.textContent = 'Copiado!';
+      setTimeout(() => { copyBtn.textContent = original; }, 1400);
+    } catch(e){
+      // clipboard indisponível, ignora silenciosamente
+    }
+  });
+
+  // primeira frase ao carregar (já é aleatória a cada load da página)
+  currentIndex = pickIndex();
+  renderQuote(currentIndex);
+  shownCount = 1;
+  counterNote.textContent = '1 frase exibida nesta sessão';
+
+  // troca automática a cada 15s, sem precisar clicar
+  const AUTO_INTERVAL_MS = 15000;
+  let autoTimer = setInterval(showNext, AUTO_INTERVAL_MS);
+
+  // clicar em "Nova frase" reinicia a contagem do timer, pra não trocar de novo logo em seguida
+  newQuoteBtn.addEventListener('click', () => {
+    clearInterval(autoTimer);
+    autoTimer = setInterval(showNext, AUTO_INTERVAL_MS);
+  });
+})();
+</script>
+</body>
+</html>
